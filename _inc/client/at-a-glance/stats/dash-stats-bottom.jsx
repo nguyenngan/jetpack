@@ -3,8 +3,11 @@
  */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { jetpackCreateInterpolateElement } from 'components/create-interpolate-element';
-import { numberFormat, moment } from 'i18n-calypso';
+import { moment } from 'i18n-calypso';
+
+/**
+ * WordPress dependencies
+ */
 import { __, _x, _n, sprintf } from '@wordpress/i18n';
 
 /**
@@ -15,6 +18,8 @@ import Button from 'components/button';
 import Card from 'components/card';
 import ConnectButton from 'components/connect-button';
 import getRedirectUrl from 'lib/jp-redirect';
+import { jetpackCreateInterpolateElement } from 'components/create-interpolate-element';
+import { numberFormat } from 'components/number-format';
 
 class DashStatsBottom extends Component {
 	statsBottom() {

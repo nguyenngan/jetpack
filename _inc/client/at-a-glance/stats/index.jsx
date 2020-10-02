@@ -5,8 +5,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { forEach, get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
-import { jetpackCreateInterpolateElement } from 'components/create-interpolate-element';
-import { numberFormat, moment } from 'i18n-calypso';
+import { moment } from 'i18n-calypso';
+
+/**
+ * WordPress dependencies
+ */
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -25,7 +28,9 @@ import { getStatsData, statsSwitchTab, fetchStatsData, getActiveStatsTab } from 
 import { imagePath } from 'constants/urls';
 import { isOfflineMode, isCurrentUserLinked, getConnectUrl } from 'state/connection';
 import { isModuleAvailable, getModuleOverride } from 'state/modules';
+import { jetpackCreateInterpolateElement } from 'components/create-interpolate-element';
 import ModuleOverriddenBanner from 'components/module-overridden-banner';
+import { numberFormat } from 'components/number-format';
 import QueryStatsData from 'components/data/query-stats-data';
 import Spinner from 'components/spinner';
 

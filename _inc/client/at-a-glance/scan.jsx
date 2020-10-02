@@ -4,22 +4,23 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { jetpackCreateInterpolateElement } from 'components/create-interpolate-element';
-import { numberFormat } from 'i18n-calypso';
+
+/**
+ * WordPress dependencies
+ */
 import { __, _n } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import Card from 'components/card';
-import QueryVaultPressData from 'components/data/query-vaultpress-data';
-import QueryScanStatus from 'components/data/query-scan-status';
+import DashItem from 'components/dash-item';
 import { getSitePlan, isFetchingSiteData } from 'state/site';
 import { getScanStatus, isFetchingScanStatus } from 'state/scan';
 import { isPluginInstalled } from 'state/site/plugins';
 import { getVaultPressScanThreatCount, getVaultPressData } from 'state/at-a-glance';
 import { isOfflineMode } from 'state/connection';
-import DashItem from 'components/dash-item';
+import { jetpackCreateInterpolateElement } from 'components/create-interpolate-element';
 import { get, isArray } from 'lodash';
 import { getUpgradeUrl, showBackups } from 'state/initial-state';
 import JetpackBanner from 'components/jetpack-banner';
@@ -29,6 +30,9 @@ import {
 	FEATURE_SECURITY_SCANNING_JETPACK,
 } from 'lib/plans/constants';
 import getRedirectUrl from 'lib/jp-redirect';
+import QueryVaultPressData from 'components/data/query-vaultpress-data';
+import QueryScanStatus from 'components/data/query-scan-status';
+import { numberFormat } from 'components/number-format';
 
 /**
  * Displays a card for Security Scan based on the props given.
