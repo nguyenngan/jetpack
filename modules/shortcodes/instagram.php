@@ -86,11 +86,120 @@ add_filter( 'pre_kses', 'jetpack_instagram_embed_reversal' );
  */
 wp_oembed_remove_provider( '#https?://(www\.)?instagr(\.am|am\.com)/p/.*#i' );
 wp_oembed_remove_provider( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i' );
-wp_embed_register_handler(
-	'jetpack_instagram',
-	'#http(s?)://(www\.)?instagr(\.am|am\.com)/(p|tv)/([^\/]*)#i',
-	'jetpack_instagram_handler'
+
+wp_oembed_add_provider(
+	'#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i',
+	'https://graph.facebook.com/v5.0/instagram_oembed/',
+	true
 );
+
+/**
+ * Add auth token required by Instagram's oEmbed REST API.
+ *
+ * @since 9.1.0
+ *
+ * @param string $provider URL of the oEmbed provider.
+ * @param string $url      URL of the content to be embedded.
+ * @param array  $args     arguments, usually passed from a shortcode.
+ *
+ * @return string
+ */
+function jetpack_instagram_oembed_auth_token( $provider, $url, $args ) {
+	if ( ! wp_startswith( $provider, 'https://graph.facebook.com/v5.0/instagram_oembed/' ) ) {
+		return $provider;
+	}
+
+	$access_token = jetpack_instagram_get_access_token();
+
+	// We handle the case where we _don't_ have an access token in `jetpack_instagram_pre_oembed_result`,
+	// which comes before this filter (and skips it if successful).
+	if ( empty( $access_token ) ) {
+		return $provider;
+	}
+
+	return add_query_arg(
+		array( 'access_token' => $access_token ),
+		$provider
+	);
+}
+add_filter( 'oembed_fetch_url', 'jetpack_instagram_oembed_auth_token', 10, 3 );
+
+// TODO:
+// * Update comment below to be more specific.
+// * Include note that we could alternatively change the URL to the WP.com embed proxy in oembed_fetch_url,
+// and add JP/WP.com auth headers in oembed_remote_get_args,
+// but it's kinda hard to carry over the logic from Client::remote_request
+// * Carry over more logic from jetpack_instagram_handler (dimensions stuff, script) (if needed)
+// Might need to carry over caching, but it's possible that Core's oEmbed handling gives us that already
+// (Pretty sure about the case when we have a token (handled in our oembed_fetch_url filter --
+// but not so sure if we don't (pre_oembed_result -- that might bypass oEmbed caching)).
+
+/**
+ * Filters the oEmbed result before any HTTP requests are made.
+ *
+ * This allows one to short-circuit the default logic, perhaps by
+ * replacing it with a routine that is more optimal for your setup.
+ *
+ * Returning a non-null value from the filter will effectively short-circuit retrieval
+ * and return the passed value instead.
+ *
+ * @since 4.5.3
+ *
+ * @param null|string $result The UNSANITIZED (and potentially unsafe) HTML that should be used to embed.
+ *                            Default null to continue retrieving the result.
+ * @param string      $url    The URL to the content that should be attempted to be embedded.
+ * @param array       $args   Optional. Arguments, usually passed from a shortcode. Default empty.
+ */
+function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
+	if ( ! preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i', $url ) ) {
+		return $result;
+	}
+
+	$access_token = jetpack_instagram_get_access_token();
+
+	// If we _have_ an Instagram oEmbed access token, we'll handle this `jetpack_instagram_oembed_auth_token`.
+	if ( ! empty( $access_token ) ) {
+		return $result;
+	}
+
+	// Check if we're JP and connected; if yes, try WP.com's proxy endpoint.
+	if ( ! Jetpack::is_active_and_not_offline_mode() ) {
+		// return new WP_Error(
+		// 'jetpack_not_active',
+		// esc_html__( 'Jetpack must be active to fetch Instagram embed', 'jetpack' )
+		// );
+		return $result;
+	}
+
+	$response      = Client::wpcom_json_api_request_as_blog(
+		add_query_arg(
+			array( 'url' => $url ), // TODO: Include/sanitize args.
+			'/oembed-proxy/instagram'
+		),
+		'2',
+		array(),
+		null,
+		'wpcom'
+	);
+	$response_body = json_decode( wp_remote_retrieve_body( $response ) );
+
+	if (
+		is_wp_error( $response )
+		|| 200 !== wp_remote_retrieve_response_code( $response )
+		|| empty( $response_body )
+	) {
+		// return new WP_Error(
+		// 'instagram_error',
+		// esc_html__( 'Invalid Instagram resource', 'jetpack' )
+		// );
+		return $result;
+	}
+
+	return $response_body->html;
+
+}
+add_filter( 'pre_oembed_result', 'jetpack_instagram_pre_oembed_result', 10, 3 );
+
 
 /**
  * Handle Instagram embeds (build embed from regex).
