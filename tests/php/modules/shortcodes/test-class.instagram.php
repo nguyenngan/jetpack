@@ -128,7 +128,7 @@ BODY;
 	}
 
 	/**
-	 * @covers ::jetpack_instagram_handler
+	 * @covers ::jetpack_instagram_oembed_auth_token
 	 * @todo Enable this test on WP master https://github.com/Automattic/jetpack/issues/12918
 	 */
 	public function test_instagram_replace_image_url_with_embed() {
@@ -153,7 +153,7 @@ BODY;
 	}
 
 	/**
-	 * @covers ::jetpack_instagram_handler
+	 * @covers ::jetpack_instagram_oembed_auth_token
 	 * @todo Enable this test on WP master https://github.com/Automattic/jetpack/issues/12918
 	 */
 	public function test_instagram_replace_video_url_with_embed() {
@@ -178,7 +178,7 @@ BODY;
 	}
 
 	/**
-	 * @covers ::jetpack_instagram_handler
+	 * @covers ::jetpack_instagram_oembed_auth_token
 	 * @todo Enable this test on WP master https://github.com/Automattic/jetpack/issues/12918
 	 */
 	public function test_instagram_replace_profile_image_url_with_embed() {
@@ -206,7 +206,7 @@ BODY;
 	}
 
 	/**
-	 * @covers ::jetpack_instagram_handler
+	 * @covers ::jetpack_instagram_oembed_auth_token
 	 * @todo Enable this test on WP master https://github.com/Automattic/jetpack/issues/12918
 	 */
 	public function test_instagram_replace_profile_video_url_with_embed() {
