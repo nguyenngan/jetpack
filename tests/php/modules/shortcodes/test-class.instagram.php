@@ -37,7 +37,7 @@ class WP_Test_Jetpack_Shortcodes_Instagram extends WP_UnitTestCase {
 	}
 
 	public function pre_http_request( $response, $args, $url ) {
-		if ( 0 !== strpos( $url, 'https://graph.facebook.com/v5.0/instagram_oembed/?url=' ) ) {
+		if ( 0 !== strpos( $url, 'https://graph.facebook.com/v5.0/instagram_oembed/' ) ) {
 			return $response;
 		}
 
