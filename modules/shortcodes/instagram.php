@@ -210,7 +210,6 @@ function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 }
 add_filter( 'pre_oembed_result', 'jetpack_instagram_pre_oembed_result', 10, 3 );
 
-
 /**
  * Handle Instagram embeds (build embed from regex).
  *
@@ -338,7 +337,7 @@ function jetpack_instagram_get_access_token() {
 }
 
 /**
- * Given a URL, will output an HTML comment and the linked URL.
+ * Given a URL, will the linked URL.
  *
  * @param string $url The URL that was attempted to embed.
  *
