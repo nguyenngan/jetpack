@@ -79,6 +79,9 @@ add_filter( 'pre_kses', 'jetpack_instagram_embed_reversal' );
 /**
  * Instagram's custom Embed provider.
  * We first remove the embed provider that's registered by Core; then, we declare our own.
+ *
+ * We can drop the `wp_oembed_remove_provider` line once Core stops adding its own Instagram provider:
+ * https://core.trac.wordpress.org/ticket/50861.
  */
 wp_oembed_remove_provider( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i' );
 
