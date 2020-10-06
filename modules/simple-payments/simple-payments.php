@@ -1,9 +1,17 @@
-<?php
-/*
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+/**
  * Simple Payments lets users embed a PayPal button fully integrated with wpcom to sell products on the site.
  * This is not a proper module yet, because not all the pieces are in place. Until everything is shipped, it can be turned
  * into module that can be enabled/disabled.
-*/
+ *
+ * @package Jetpack
+ */
+
+use Automattic\Jetpack\Blocks;
+
+/**
+ * Jetpack_Simple_Payments
+ */
 class Jetpack_Simple_Payments {
 	// These have to be under 20 chars because that is CPT limit.
 	static $post_type_order = 'jp_pay_order';
@@ -168,17 +176,8 @@ class Jetpack_Simple_Payments {
 
 		$data['id'] = $attrs['id'];
 
-		if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
-			require_once WP_CONTENT_DIR . '/lib/display-context.php';
-			$context = \A8C\Display_Context\get_current_context();
-			if ( \A8C\Display_Context\EMAIL === $context ) {
-				// Avoid enqueueing unsupported files by emails.
-				return $this->output_shortcode( $data );
-			}
-		}
-
 		if ( ! $this->is_enabled_jetpack_simple_payments() ) {
-			if ( ! is_feed() ) {
+			if ( jetpack_is_frontend() ) {
 				return $this->output_admin_warning( $data );
 			}
 			return;

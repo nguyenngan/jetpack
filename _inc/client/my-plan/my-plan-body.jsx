@@ -726,25 +726,36 @@ class MyPlanBody extends React.Component {
 									) }
 								/>
 							</div>
-							<div className="jp-landing__plan-features-text">
-								<h3 className="jp-landing__plan-features-title">
-									{ __( 'Increase traffic to your site', 'jetpack' ) }
-								</h3>
-								<p>
-									{ __(
-										'Reach a wider audience by automatically sharing your posts on social media.',
-										'jetpack'
+							{ 'inactive' !== this.props.getModuleOverride( 'publicize' ) && (
+								<div className="jp-landing__plan-features-text">
+									<h3 className="jp-landing__plan-features-title">
+										{ __( 'Increase traffic to your site', 'jetpack' ) }
+									</h3>
+									<p>
+										{ __(
+											'Reach a wider audience by automatically sharing your posts on social media.',
+											'jetpack'
+										) }
+									</p>
+									{ this.props.isModuleActivated( 'publicize' ) ? (
+										<Button
+											onClick={ this.handleButtonClickForTracking( 'free_sharing' ) }
+											href={ getRedirectUrl( 'calypso-marketing-connections', {
+												site: this.props.siteRawUrl,
+											} ) }
+										>
+											{ __( 'Start sharing', 'jetpack' ) }
+										</Button>
+									) : (
+										<Button
+											onClick={ this.activatePublicize }
+											disabled={ this.props.isActivatingModule( 'publicize' ) }
+										>
+											{ __( 'Activate Publicize', 'jetpack' ) }
+										</Button>
 									) }
-								</p>
-								<Button
-									onClick={ this.handleButtonClickForTracking( 'free_sharing' ) }
-									href={ getRedirectUrl( 'calypso-marketing-connections', {
-										site: this.props.siteRawUrl,
-									} ) }
-								>
-									{ __( 'Start sharing', 'jetpack' ) }
-								</Button>
-							</div>
+								</div>
+							) }
 						</div>
 
 						<div className="jp-landing__plan-features-card">
@@ -803,28 +814,6 @@ class MyPlanBody extends React.Component {
 								</Button>
 							</div>
 						</div>
-
-						{ 'is-free-plan' === planClass && (
-							<div className="jp-landing__plan-features-card">
-								<div className="jp-landing__plan-features-text">
-									<h3 className="jp-landing__plan-features-title">
-										{ __( 'Take your site to the next level!', 'jetpack' ) }
-									</h3>
-									<ul className="jp-landing__plan-features-list">
-										<li>{ __( 'Expand your audience with pro SEO tools.', 'jetpack' ) }</li>
-										<li>{ __( 'Customize your social posting schedule.', 'jetpack' ) }</li>
-										<li>{ __( 'Monetize your site by running high quality ads.', 'jetpack' ) }</li>
-									</ul>
-									<Button
-										className="is-primary"
-										onClick={ this.handleButtonClickForTracking( 'free_explore_jetpack_plans' ) }
-										href={ '#/plans' }
-									>
-										{ __( 'Upgrade Jetpack now', 'jetpack' ) }
-									</Button>
-								</div>
-							</div>
-						) }
 					</div>
 				);
 				break;
