@@ -127,7 +127,6 @@ function jetpack_instagram_oembed_auth_token( $provider, $url, $args ) {
 	return add_query_arg(
 		array(
 			'access_token' => $access_token,
-			'omitscript'   => 1,
 		),
 		$provider
 	);
