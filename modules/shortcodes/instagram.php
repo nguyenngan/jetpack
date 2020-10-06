@@ -92,6 +92,15 @@ wp_oembed_add_provider(
 );
 
 /**
+ * Handle an alternate Instagram URL format, where the username is also part of the URL.
+ */
+wp_oembed_add_provider(
+	'#https?://(?:www\.)?instagr(?:\.am|am\.com)/(?:[^/]*)/(p|tv)/([^\/]*)#i',
+	'https://graph.facebook.com/v5.0/instagram_oembed/',
+	true
+);
+
+/**
  * Add auth token required by Instagram's oEmbed REST API.
  *
  * @since 9.1.0
@@ -423,16 +432,6 @@ function jetpack_instagram_fetch_embed( $args ) {
 
 	return $response_body;
 }
-
-/**
- * Handle an alternate Instagram URL format, where the username is also part of the URL.
- * We do not actually need that username for the embed.
- */
-wp_embed_register_handler(
-	'jetpack_instagram_alternate_format',
-	'#https?://(?:www\.)?instagr(?:\.am|am\.com)/(?:[^/]*)/(p|tv)/([^\/]*)#i',
-	'jetpack_instagram_alternate_format_handler'
-);
 
 /**
  * Handle alternate Instagram embeds (build embed from regex).
