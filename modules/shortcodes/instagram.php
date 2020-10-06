@@ -133,12 +133,6 @@ function jetpack_instagram_oembed_auth_token( $provider, $url, $args ) {
 }
 add_filter( 'oembed_fetch_url', 'jetpack_instagram_oembed_auth_token', 10, 3 );
 
-// TODO:
-// * Carry over more logic from jetpack_instagram_handler (dimensions stuff, script) (if needed)
-// Might need to carry over caching, but it's possible that Core's oEmbed handling gives us that already
-// (Pretty sure about the case when we have a token (handled in our oembed_fetch_url filter --
-// but not so sure if we don't (pre_oembed_result -- that might bypass oEmbed caching)).
-
 /**
  * Use WP.com's oEmbed proxy endpoint if we don't have an auth token.
  *
