@@ -174,16 +174,12 @@ function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 
 	// Check if we're JP and connected; if yes, try WP.com's proxy endpoint.
 	if ( ! Jetpack::is_active_and_not_offline_mode() ) {
-		// return new WP_Error(
-		// 'jetpack_not_active',
-		// esc_html__( 'Jetpack must be active to fetch Instagram embed', 'jetpack' )
-		// );
 		return $result;
 	}
 
 	$response      = Client::wpcom_json_api_request_as_blog(
 		add_query_arg(
-			array( 'url' => $url ), // TODO: Include/sanitize args.
+			array( 'url' => $url ),
 			'/oembed-proxy/instagram'
 		),
 		'2',
@@ -198,10 +194,6 @@ function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 		|| 200 !== wp_remote_retrieve_response_code( $response )
 		|| empty( $response_body )
 	) {
-		// return new WP_Error(
-		// 'instagram_error',
-		// esc_html__( 'Invalid Instagram resource', 'jetpack' )
-		// );
 		return $result;
 	}
 
