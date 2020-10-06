@@ -166,7 +166,7 @@ function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 
 	$access_token = jetpack_instagram_get_access_token();
 
-	// If we _have_ an Instagram oEmbed access token, we'll handle this `jetpack_instagram_oembed_auth_token`.
+	// If we _have_ an Instagram oEmbed access token, we'll handle this in `jetpack_instagram_oembed_auth_token`.
 	if ( ! empty( $access_token ) ) {
 		return $result;
 	}
