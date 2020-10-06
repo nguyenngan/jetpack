@@ -135,30 +135,30 @@ function jetpack_instagram_oembed_auth_token( $provider, $url, $args ) {
 add_filter( 'oembed_fetch_url', 'jetpack_instagram_oembed_auth_token', 10, 3 );
 
 // TODO:
-// * Update comment below to be more specific.
-// * Include note that we could alternatively change the URL to the WP.com embed proxy in oembed_fetch_url,
-// and add JP/WP.com auth headers in oembed_remote_get_args,
-// but it's kinda hard to carry over the logic from Client::remote_request
 // * Carry over more logic from jetpack_instagram_handler (dimensions stuff, script) (if needed)
 // Might need to carry over caching, but it's possible that Core's oEmbed handling gives us that already
 // (Pretty sure about the case when we have a token (handled in our oembed_fetch_url filter --
 // but not so sure if we don't (pre_oembed_result -- that might bypass oEmbed caching)).
 
 /**
- * Filters the oEmbed result before any HTTP requests are made.
+ * Use WP.com's oEmbed proxy endpoint if we don't have an auth token.
  *
- * This allows one to short-circuit the default logic, perhaps by
- * replacing it with a routine that is more optimal for your setup.
+ * We intercept any HTTP requests to Instagram's oEmbed endpoint before they
+ * are made. If we don't have the required auth token, we short-circuit the
+ * oEmbed logic by making a request to WP.com's oEmbed proxy and returning its
+ * response.
  *
- * Returning a non-null value from the filter will effectively short-circuit retrieval
- * and return the passed value instead.
- *
- * @since 4.5.3
+ * @since 9.1.0
  *
  * @param null|string $result The UNSANITIZED (and potentially unsafe) HTML that should be used to embed.
  *                            Default null to continue retrieving the result.
  * @param string      $url    The URL to the content that should be attempted to be embedded.
  * @param array       $args   Optional. Arguments, usually passed from a shortcode. Default empty.
+ *
+ * @todo Rather than making the actual Jetpack->WP.com HTTP request in here, we could consider
+ * adding the required authentication headers via the `oembed_remote_get_args` filter (and dropping
+ * this filter). Those headers are currently added by `Client::wpcom_json_api_request_as_blog` and
+ * would need extracting into a helper.
  */
 function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 	if ( ! preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i', $url ) ) {
