@@ -176,6 +176,9 @@ function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 		return $result;
 	}
 
+	// @TODO Use Core's /oembed/1.0/proxy endpoint on WP.com
+	// (Currently not global but per-site, i.e. /oembed/1.0/sites/1234567/proxy)
+	// and deprecate /oembed-proxy/instagram endpoint.
 	$response      = Client::wpcom_json_api_request_as_blog(
 		add_query_arg(
 			array( 'url' => $url ),
