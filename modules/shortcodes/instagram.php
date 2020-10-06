@@ -78,13 +78,8 @@ add_filter( 'pre_kses', 'jetpack_instagram_embed_reversal' );
 
 /**
  * Instagram's custom Embed provider.
- * We first remove 2 different embed providers, both registered by Core.
- * - The first is the original provider,that only supports images.
- * - The second is tne new provider that replaced the first one in Core when Core added support for videos. https://core.trac.wordpress.org/changeset/44486
- *
- * Once the core embed provider is removed (one or the other, depending on your version of Core), we declare our own.
+ * We first remove the embed provider that's registered by Core; then, we declare our own.
  */
-wp_oembed_remove_provider( '#https?://(www\.)?instagr(\.am|am\.com)/p/.*#i' );
 wp_oembed_remove_provider( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i' );
 
 wp_oembed_add_provider(
