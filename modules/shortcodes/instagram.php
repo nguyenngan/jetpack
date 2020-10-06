@@ -226,33 +226,6 @@ function jetpack_instagram_get_access_token() {
 }
 
 /**
- * Should the request to fetch embed information be cached?
- *
- * @param array  $matches    Array of matches from the regex.
- * @param array  $atts       The original unmodified attributes.
- * @param string $passed_url The original URL that was matched by the regex.
- *
- * @return bool
- */
-function jetpack_instagram_use_cache( $matches, $atts, $passed_url ) {
-	/**
-	 * Filter Object Caching for response from Instagram.
-	 *
-	 * Allow enabling of object caching for the response sent by Instagram when querying for Instagram image HTML.
-	 *
-	 * @module shortcodes
-	 *
-	 * @since  3.3.0
-	 *
-	 * @param        bool        false Object caching is off by default.
-	 * @param array  $matches    Array of Instagram URLs found in the post.
-	 * @param array  $atts       Instagram Shortcode attributes.
-	 * @param string $passed_url Instagram API URL.
-	 */
-	return apply_filters( 'instagram_cache_oembed_api_response_body', false, $matches, $atts, $passed_url );
-}
-
-/**
  * Display the Instagram shortcode.
  *
  * @param array $atts Shortcode attributes.
