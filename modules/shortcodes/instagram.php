@@ -150,8 +150,10 @@ add_filter( 'oembed_fetch_url', 'jetpack_instagram_oembed_auth_token', 10, 3 );
  *
  * @todo Rather than making the actual Jetpack->WP.com HTTP request in here, we could consider
  * adding the required authentication headers via the `oembed_remote_get_args` filter (and dropping
- * this filter). Those headers are currently added by `Client::wpcom_json_api_request_as_blog` and
- * would need extracting into a helper.
+ * this filter). Those headers are currently added by `Client::wpcom_json_api_request_as_blog()` and
+ * would need extracting into a helper. Furthermore, that function uses the `Client::_wp_remote_request()`
+ * helper that automatically retries upon SSL verification header (for JP sites on hosts with misconfigured
+ * SSL), which isn't easy to carry over.
  */
 function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 	if ( ! preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i', $url ) ) {
