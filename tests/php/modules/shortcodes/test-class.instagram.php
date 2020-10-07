@@ -54,6 +54,19 @@ class WP_Test_Jetpack_Shortcodes_Instagram extends WP_UnitTestCase {
 		$api_query = wp_parse_url( $url, PHP_URL_QUERY );
 		$api_query_args = null;
 		wp_parse_str( $api_query, $api_query_args );
+
+		if ( ! isset( $api_query_args['access_token'] ) ) {
+			$error = array(
+				'code'       => 104,
+				'fbtrace_id' => 'A3Rblahblahblah',
+				'message'    => 'An access token is required to request this resource.',
+				'type'       => 'OAuthException',
+			);
+
+			$response['body'] = wp_json_encode( compact( 'error' ) );
+			return $response;
+		}
+
 		if ( ! isset( $api_query_args['url'] ) ) {
 			return $response;
 		}
