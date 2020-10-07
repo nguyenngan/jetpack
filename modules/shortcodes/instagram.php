@@ -118,7 +118,7 @@ function jetpack_instagram_oembed_auth_token( $provider, $url, $args ) {
 
 	$access_token = jetpack_instagram_get_access_token();
 
-	// We handle the case where we _don't_ have an access token in `jetpack_instagram_pre_oembed_result`,
+	// We handle the case where we _don't_ have an access token in `jetpack_instagram_oembed_result`,
 	// which comes before this filter (and skips it if successful).
 	if ( empty( $access_token ) ) {
 		return $provider;
@@ -155,17 +155,20 @@ add_filter( 'oembed_fetch_url', 'jetpack_instagram_oembed_auth_token', 10, 3 );
  * helper that automatically retries upon SSL verification header (for JP sites on hosts with misconfigured
  * SSL), which isn't easy to carry over.
  */
-function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
+function jetpack_instagram_oembed_result( $result, $url, $args ) {
 	if ( ! preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i', $url ) ) {
 		return $result;
 	}
 
 	$access_token = jetpack_instagram_get_access_token();
 
-	// If we _have_ an Instagram oEmbed access token, we'll handle this in `jetpack_instagram_oembed_auth_token`.
+	// If we _have_ an Instagram oEmbed access token, this has been handled in
+	// `jetpack_instagram_oembed_auth_token`.
 	if ( ! empty( $access_token ) ) {
 		return $result;
 	}
+
+	// TODO: Check if $result has an error, clear it.
 
 	// Check if we're JP and connected; if yes, try WP.com's proxy endpoint.
 	if ( ! Jetpack::is_active_and_not_offline_mode() ) {
@@ -198,7 +201,14 @@ function jetpack_instagram_pre_oembed_result( $result, $url, $args ) {
 	return $response_body->html;
 
 }
-add_filter( 'pre_oembed_result', 'jetpack_instagram_pre_oembed_result', 10, 3 );
+// A potential alternative would be to hook into `pre_oembed_result`,
+// as that would require fewer checks in `jetpack_instagram_oembed_result`.
+// However, `pre_oembed_result` is not applied by the oEmbed REST API
+// controller (see https://core.trac.wordpress.org/ticket/51471) which
+// would break the `/oembed/1.0/proxy` endpoint that is used by Gutenberg's
+// embed block.
+add_filter( 'oembed_result', 'jetpack_instagram_oembed_result', 10, 3 );
+
 
 /**
  * Fetches a Facebook API access token used for query for Instagram embed information, if one is set.
