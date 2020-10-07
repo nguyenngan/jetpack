@@ -118,25 +118,16 @@ function load_assets( $attr, $content ) {
 			);
 			$escaped_block_id = esc_js( $block_id );
 			$script           = <<<JS_END
-// Call function with block id in name
-// to allow for multiple widgets.
-function jetpackInitCalendly{$escaped_block_id}() {
-	Calendly.initInlineWidget({
-		url: '%s',
-		parentElement: document.getElementById('%s'),
-		inlineStyles: false,
-	});
-};
 // For P2s only: wait until after o2 has
 // replaced main#content to initialize widget.
 if ( window.jQuery && window.o2 ) {
-	jQuery( 'body' ).on( 'ready.o2', jetpackInitCalendly{$escaped_block_id} );
+	jQuery( 'body' ).on( 'ready.o2', function() { jetpackInitCalendly( '%s', '%s' ); } );
 // Else initialize widget without waiting.
 } else {
-	jetpackInitCalendly{$escaped_block_id}();
+	jetpackInitCalendly( '%s', '%s' );
 }
 JS_END;
-			wp_add_inline_script( 'jetpack-calendly-external-js', sprintf( $script, esc_url( $url ), esc_js( $html_id ) ) );
+			wp_add_inline_script( 'jetpack-calendly-external-js', sprintf( $script, esc_url( $url ), esc_js( $html_id ), esc_url( $url ), esc_js( $html_id ) ) );
 		}
 	}
 
@@ -204,6 +195,19 @@ function enqueue_calendly_js() {
 			}
 		}"
 	);
+
+	$script           = <<<JS_END
+// Call function with block id in name
+// to allow for multiple widgets.
+function jetpackInitCalendly( url, elementId ) {
+	Calendly.initInlineWidget({
+		url: url,
+		parentElement: document.getElementById( elementId ),
+		inlineStyles: false,
+	});
+};
+JS_END;
+			wp_add_inline_script( 'jetpack-calendly-external-js', sprintf( $script, esc_url( $url ), esc_js( $html_id ) ) );
 }
 
 /**
